@@ -232,3 +232,12 @@ async def whitebit_webhook(
         raise HTTPException(status_code=500, detail=f"Handler error: {exc}")
 
     return {"ok": True, "id": envelope.id, "method": envelope.method}
+
+
+@app.get("/health")
+def health_check():
+    """
+    Simple health check endpoint.
+    Returns 200 OK if the service is running.
+    """
+    return {"status": "ok", "version": app.version}

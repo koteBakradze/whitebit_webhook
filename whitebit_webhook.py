@@ -164,7 +164,7 @@ def whitebit_verification():
     return JSONResponse([PUBLIC_KEY])
 
 
-@app.post("/webhook")
+@app.post("/")
 async def whitebit_webhook(
     request: Request,
     x_txc_apikey: str = Header(..., convert_underscores=False),

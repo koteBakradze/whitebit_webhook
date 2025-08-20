@@ -171,8 +171,10 @@ async def whitebit_webhook(
     x_txc_payload: str = Header(..., convert_underscores=False),
     x_txc_signature: str = Header(..., convert_underscores=False),
 ):
+    print(f"Received webhook: \n{x_txc_apikey},\n {x_txc_payload},\n {x_txc_signature}")
     # 1) Verify API key
     if not hmac.compare_digest(x_txc_apikey, API_KEY):
+        print(f"Invalid API key: {x_txc_apikey}")
         raise HTTPException(status_code=401, detail="Bad API key")
 
     # 2) Read body and verify signature against payload header
@@ -183,6 +185,7 @@ async def whitebit_webhook(
     try:
         body = json.loads(raw.decode("utf-8"))
     except json.JSONDecodeError:
+        print(f"Invalid JSON body\n {raw.decode('utf-8')}")
         raise HTTPException(status_code=400, detail="Invalid JSON body")
 
     envelope = parse_envelope(body)
@@ -202,6 +205,7 @@ async def whitebit_webhook(
     # 5) Dispatch by method (business logic placeholders)
     # Return 200 quickly—WhiteBIT retries up to 5 times every ~10 minutes otherwise.
     method = envelope.method
+    print(f"Handling method: {method}, params: {envelope.params}")
     try:
         if method == "code.apply":
             # handle code application
